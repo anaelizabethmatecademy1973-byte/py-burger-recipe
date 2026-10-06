@@ -33,24 +33,14 @@ class Number(Validator):
 
         if not self.min_value <= value <= self.max_value:
             raise ValueError(
-                "Quantity should not be less than attribute minvalue "
-                "and greater than attribute maxvalue."
+                f"Quantity should not be less than {self.min_value} "
+                f"and greater than {self.max_value}."
             )
 
 
 class OneOf(Validator):
     def __init__(self, options: tuple[str, ...]) -> None:
         self.options = options
-
-    def __set_name__(self, owner: type, name: str) -> None:
-        self.protected_name = "_" + name
-
-    def __get__(self, instance: Any, owner: type | None = None) -> Any:
-        return getattr(instance, self.protected_name)
-
-    def __set__(self, instance: Any, value: Any) -> None:
-        self.validate(value)
-        setattr(instance, self.protected_name, value)
 
     def validate(self, value: Any) -> None:
         if value not in self.options:
